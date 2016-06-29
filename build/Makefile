@@ -3,7 +3,7 @@ CC=gcc
 
 UNAME := $(shell uname)
 
-CFLAGS=-O3 -I ../sources -I ../../../libhxcfe/trunk/sources -I ../../../libusbhxcfe/trunk/sources
+CFLAGS=-O3 -I ../sources -I ../../libhxcfe/sources -I ../../libusbhxcfe/sources
 
 LDFLAGS=-lc -lm  -ldl  -lpthread
 LIBHXCFE = libhxcfe.so
@@ -12,8 +12,8 @@ LIBUSBHXCFE = libusbhxcfe.so
 ifeq ($(UNAME), Darwin)
 CFLAGS += -arch i386 -mmacosx-version-min=10.5
 LDFLAGS += -arch i386 -mmacosx-version-min=10.5
-LIBHXCFE= libhxcfe.dylib
-LIBUSBHXCFE= libusbhxcfe.dylib
+LIBHXCFE= libhxcfe.a
+LIBUSBHXCFE= libusbhxcfe.a
 endif
 
 ifeq ($(UNAME), Linux)
@@ -29,15 +29,15 @@ EXEC=hxcfe
 
 all: $(EXEC)
 
-hxcfe:  hxcfe.o utils.o ../../../build/libhxcadaptor.a $(LIBHXCFE) $(LIBUSBHXCFE)
+hxcfe:  hxcfe.o utils.o ../../build/libhxcadaptor.a $(LIBHXCFE) $(LIBUSBHXCFE)
 	$(CC) -o $@    $^ $(LDFLAGS)
-	cp $@ ../../../build
+	cp $@ ../../build
 
-$(LIBHXCFE): ../../../build/$(LIBHXCFE)
-	ln ../../../build/$(LIBHXCFE)  $(LIBHXCFE)
+$(LIBHXCFE): ../../build/$(LIBHXCFE)
+	ln ../../build/$(LIBHXCFE)  $(LIBHXCFE)
 
-$(LIBUSBHXCFE): ../../../build/$(LIBUSBHXCFE)
-	ln ../../../build/$(LIBUSBHXCFE)  $(LIBUSBHXCFE)
+$(LIBUSBHXCFE): ../../build/$(LIBUSBHXCFE)
+	ln ../../build/$(LIBUSBHXCFE)  $(LIBUSBHXCFE)
 
 hxcfe.o: ../sources/hxcfe.c 
 	$(CC) -o $@ -c $< $(CFLAGS)
