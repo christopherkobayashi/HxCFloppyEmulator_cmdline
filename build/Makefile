@@ -5,7 +5,7 @@ UNAME := $(shell uname)
 
 CFLAGS=-O3 -I ../sources -I ../../libhxcfe/sources -I ../../libusbhxcfe/sources
 
-LDFLAGS=-lc -lm  -ldl  -lpthread
+LDFLAGS=-lc -lm  -ldl  -lpthread -L../../build
 LIBHXCFE = libhxcfe.so
 LIBUSBHXCFE = libusbhxcfe.so
 
@@ -30,7 +30,7 @@ EXEC=hxcfe
 all: $(EXEC)
 
 hxcfe:  hxcfe.o utils.o ../../build/libhxcadaptor.a $(LIBHXCFE) $(LIBUSBHXCFE)
-	$(CC) -o $@    $^ $(LDFLAGS)
+	$(CC) -o $@ hxcfe.o utils.o -lhxcadaptor -lhxcfe -lusbhxcfe $(LDFLAGS)
 	cp $@ ../../build
 
 $(LIBHXCFE): ../../build/$(LIBHXCFE)
