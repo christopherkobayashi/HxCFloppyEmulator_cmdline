@@ -6,14 +6,14 @@ UNAME := $(shell uname)
 CFLAGS=-O3 -I ../sources -I ../../libhxcfe/sources -I ../../libusbhxcfe/sources
 
 LDFLAGS=-lc -lm  -ldl  -lpthread -L../../build
-LIBHXCFE = libhxcfe.so
-LIBUSBHXCFE = libusbhxcfe.so
+LIBHXCFE= libhxcfe.a
+LIBUSBHXCFE= libusbhxcfe.a
+
+# change above to .so if using shared libraries.  This can be done better.
 
 ifeq ($(UNAME), Darwin)
 CFLAGS += -arch i386 -mmacosx-version-min=10.5
 LDFLAGS += -arch i386 -mmacosx-version-min=10.5
-LIBHXCFE= libhxcfe.a
-LIBUSBHXCFE= libusbhxcfe.a
 endif
 
 ifeq ($(UNAME), Linux)
