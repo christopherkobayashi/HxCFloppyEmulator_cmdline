@@ -1,12 +1,9 @@
-#CC=i386-pc-linux-gcc
-CC=gcc
-
 UNAME := $(shell uname)
 
 CFLAGS=-O3 -I ../sources -I ../../libhxcfe/sources -I ../../libusbhxcfe/sources
 
 LDFLAGS= -L../../build
-LIBS=-lm -ldl -lpthread
+LIBS=-lm -lpthread
 
 LIBHXCFE= ../../build/libhxcfe.a
 LIBUSBHXCFE= ../../build/libusbhxcfe.a
@@ -14,6 +11,11 @@ LIBHXCADAPTOR= ../../build/libhxcadaptor.a
 DEPS= $(LIBUSBHXCFE) $(LIBXHCFE) $(LIBHXCADAPTOR)
 
 # change above to .so if using shared libraries.  This can be done better.
+
+ifeq ($(UNAME), Linux)
+CC=gcc
+LIBS+= -ldl
+endif
 
 ifeq ($(UNAME), Darwin)
 CFLAGS += -arch i386 -mmacosx-version-min=10.5
