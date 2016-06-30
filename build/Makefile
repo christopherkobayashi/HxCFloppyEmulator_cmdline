@@ -5,19 +5,19 @@ UNAME := $(shell uname)
 
 CFLAGS=-O3 -I ../sources -I ../../libhxcfe/sources -I ../../libusbhxcfe/sources
 
-LDFLAGS=-lc -lm  -ldl  -lpthread -L../../build
-LIBHXCFE= libhxcfe.a
-LIBUSBHXCFE= libusbhxcfe.a
+LDFLAGS= -L../../build
+LIBS=-lm -ldl -lpthread
+
+LIBHXCFE= ../../build/libhxcfe.a
+LIBUSBHXCFE= ../../build/libusbhxcfe.a
+LIBHXCADAPTOR= ../../build/libhxcadaptor.a
+DEPS= $(LIBUSBHXCFE) $(LIBXHCFE) $(LIBHXCADAPTOR)
 
 # change above to .so if using shared libraries.  This can be done better.
 
 ifeq ($(UNAME), Darwin)
 CFLAGS += -arch i386 -mmacosx-version-min=10.5
 LDFLAGS += -arch i386 -mmacosx-version-min=10.5
-endif
-
-ifeq ($(UNAME), Linux)
-LDFLAGS += -Wl,-rpath=.
 endif
 
 ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
@@ -29,15 +29,9 @@ EXEC=hxcfe
 
 all: $(EXEC)
 
-hxcfe:  hxcfe.o utils.o ../../build/libhxcadaptor.a $(LIBHXCFE) $(LIBUSBHXCFE)
-	$(CC) -o $@ hxcfe.o utils.o -lhxcadaptor -lhxcfe -lusbhxcfe $(LDFLAGS)
+hxcfe:  hxcfe.o utils.o $(DEPS)
+	$(CC) -o $@ hxcfe.o utils.o $(LIBS) -lhxcfe -lusbhxcfe -lhxcadaptor $(LDFLAGS)
 	cp $@ ../../build
-
-$(LIBHXCFE): ../../build/$(LIBHXCFE)
-	ln ../../build/$(LIBHXCFE)  $(LIBHXCFE)
-
-$(LIBUSBHXCFE): ../../build/$(LIBUSBHXCFE)
-	ln ../../build/$(LIBUSBHXCFE)  $(LIBUSBHXCFE)
 
 hxcfe.o: ../sources/hxcfe.c 
 	$(CC) -o $@ -c $< $(CFLAGS)
@@ -46,8 +40,7 @@ utils.o: ../sources/utils.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
-	rm -rf *.o
-	rm -rf *.so
+	rm -rf *.o *.so *.a
 
 mrproper: clean
 	rm -rf $(EXEC)
